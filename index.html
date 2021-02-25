@@ -11,7 +11,7 @@
   <script>
     async function main() {
       await liff.init({ liffId: "1655683432-L1veXr25" })
-      await liff.shareTargetPicker([
+      const result = await liff.shareTargetPicker([
         {
           "type": "flex",
           "altText": "Flex Message",
@@ -81,6 +81,21 @@
 }
         }
       ])
+      
+      if (result) {
+        alert(`[${result.status}] Message sent!`)
+      } else {
+        const [majorVer, minorVer, patchVer] = (liff.getLineVersion() || "").split('.');
+
+        if (minorVer === undefined) {
+          alert('ShareTargetPicker was canceled in external browser')
+          return
+        }
+
+        if (parseInt(majorVer) >= 10 && parseInt(minorVer) >= 10 && parseInt(patchVer) > 0) {
+          alert('ShareTargetPicker was canceled in LINE app')
+        }
+      }
       liff.closeWindow()
     }
     main()
